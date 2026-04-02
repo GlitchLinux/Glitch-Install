@@ -156,7 +156,7 @@ QLineEdit {
     border-radius: 4px;
     padding: 8px 12px;
     font-size: 16px;
-    selection-background-color: #FFFFFF;
+    selection-background-color: #939393;
     selection-color: #ffffff;
 }
 QLineEdit:focus {
@@ -197,7 +197,7 @@ QComboBox QAbstractItemView {
     background-color: #2e2e2e;
     color: #ffffff;
     border: 1px solid #636363;
-    selection-background-color: #FFFFFF;
+    selection-background-color: #939393;
 }
 QRadioButton {
     color: #ffffff;
@@ -244,7 +244,7 @@ QTextEdit {
     padding: 8px;
     font-family: 'JetBrains Mono', 'Fira Code', 'Consolas', 'Ubuntu Mono', monospace;
     font-size: 14px;
-    selection-background-color: #FFFFFF;
+    selection-background-color: #939393;
 }
 QTableWidget {
     background-color: #2e2e2e;
@@ -252,7 +252,7 @@ QTableWidget {
     border: 1px solid #4a4a4a;
     border-radius: 4px;
     gridline-color: #4a4a4a;
-    selection-background-color: #FFFFFF;
+    selection-background-color: #939393;
     selection-color: #ffffff;
     font-size: 15px;
 }
@@ -261,7 +261,7 @@ QTableWidget::item {
     border-bottom: 1px solid #3a3a3a;
 }
 QTableWidget::item:selected {
-    background-color: #FFFFFF;
+    background-color: #939393;
     color: #ffffff;
 }
 QHeaderView::section {
@@ -1059,6 +1059,8 @@ class InstallWorker(QThread):
             # Update initramfs for LUKS
             self.log("Updating initramfs for LUKS support...", "PROGRESS")
             run_cmd(f"chroot {target} /bin/bash -c 'DEBIAN_FRONTEND=noninteractive apt-get update -qq && apt-get install -y -qq cryptsetup cryptsetup-initramfs 2>/dev/null'", timeout=180)
+            # Ensure cryptsetup hooks are included in initramfs
+            run_cmd(f"chroot {target} /bin/bash -c 'echo \"CRYPTSETUP=y\" >> /etc/cryptsetup-initramfs/conf-hook 2>/dev/null || true'")
             run_cmd(f"chroot {target} /bin/bash -c 'update-initramfs -u -k all 2>/dev/null'", timeout=120)
             self.log("✓ initramfs updated with LUKS support", "SUCCESS")
 
@@ -1089,6 +1091,19 @@ class InstallWorker(QThread):
                 f"chroot {target} /bin/bash -c 'DEBIAN_FRONTEND=noninteractive apt-get update -qq && apt-get install -y -qq grub-efi-amd64 efibootmgr && grub-install --target=x86_64-efi --efi-directory=/boot/efi --bootloader-id=GlitchLinux --recheck && update-grub'",
                 timeout=300
             )
+
+            # Copy EFI files to fallback BOOT directory
+            self.log("Copying EFI files to fallback BOOT directory...", "PROGRESS")
+            efi_source = f"{target}/boot/efi/EFI/GlitchLinux"
+            efi_boot_dir = f"{target}/boot/efi/EFI/BOOT"
+            os.makedirs(efi_boot_dir, exist_ok=True)
+            grubx64_src = os.path.join(efi_source, "grubx64.efi")
+            bootx64_dst = os.path.join(efi_boot_dir, "BOOTx64.EFI")
+            if os.path.exists(grubx64_src):
+                shutil.copy2(grubx64_src, bootx64_dst)
+                self.log("✓ grubx64.efi copied to /boot/efi/EFI/BOOT/BOOTx64.EFI", "SUCCESS")
+            else:
+                self.log("⚠ grubx64.efi not found, skipping BOOT fallback copy", "INFO")
 
         self.log("✓ GRUB bootloader installed", "SUCCESS")
 
@@ -2455,7 +2470,7 @@ def main():
     palette.setColor(QPalette.Text, QColor("#ffffff"))
     palette.setColor(QPalette.Button, QColor("#636363"))
     palette.setColor(QPalette.ButtonText, QColor("#ffffff"))
-    palette.setColor(QPalette.Highlight, QColor("#FFFFFF"))
+    palette.setColor(QPalette.Highlight, QColor("#939393"))
     palette.setColor(QPalette.HighlightedText, QColor("#ffffff"))
     app.setPalette(palette)
 
