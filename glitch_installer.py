@@ -49,227 +49,232 @@ except ImportError:
 # ─────────────────────────────────────────────────────────────
 DARK_THEME = """
 QMainWindow {
-    background-color: #1a1a2e;
+    background-color: #393939;
 }
 QWidget {
     background-color: transparent;
-    color: #e0e0e0;
+    color: #ffffff;
     font-family: 'Segoe UI', 'Ubuntu', 'DejaVu Sans', sans-serif;
-    font-size: 13px;
+    font-size: 16px;
 }
 QLabel {
-    color: #e0e0e0;
+    color: #ffffff;
     background: transparent;
 }
 QLabel#title {
-    font-size: 22px;
+    font-size: 26px;
     font-weight: bold;
-    color: #00ffff;
+    color: #FF00D8;
     padding: 8px 0;
 }
 QLabel#subtitle {
-    font-size: 14px;
-    color: #aaaaaa;
+    font-size: 17px;
+    color: #cccccc;
     padding: 4px 0;
 }
 QLabel#sectionHeader {
-    font-size: 15px;
+    font-size: 18px;
     font-weight: bold;
-    color: #00cccc;
+    color: #FF00D8;
     padding: 6px 0;
 }
 QLabel#stepIndicator {
-    font-size: 11px;
-    color: #666666;
+    font-size: 13px;
+    color: #888888;
     padding: 2px 0;
 }
 QPushButton {
-    background-color: #2d2d44;
-    color: #e0e0e0;
-    border: 1px solid #3d3d5c;
+    background-color: #636363;
+    color: #ffffff;
+    border: 1px solid #7a7a7a;
     border-radius: 6px;
     padding: 10px 24px;
-    font-size: 13px;
+    font-size: 16px;
     font-weight: bold;
     min-width: 100px;
 }
 QPushButton:hover {
-    background-color: #3d3d5c;
-    border-color: #00ffff;
+    background-color: #7a7a7a;
+    border-color: #FF00D8;
 }
 QPushButton:pressed {
-    background-color: #1a1a2e;
+    background-color: #4a4a4a;
 }
 QPushButton:disabled {
-    background-color: #1e1e30;
-    color: #555555;
-    border-color: #2a2a40;
+    background-color: #4a4a4a;
+    color: #666666;
+    border-color: #555555;
 }
 QPushButton#primary {
-    background-color: #004d4d;
-    color: #00ffff;
-    border: 1px solid #00ffff;
+    background-color: #636363;
+    color: #FF00D8;
+    border: 1px solid #FF00D8;
 }
 QPushButton#primary:hover {
-    background-color: #006666;
+    background-color: #7a7a7a;
 }
 QPushButton#danger {
-    background-color: #4d1a1a;
+    background-color: #636363;
     color: #ff4444;
     border: 1px solid #ff4444;
 }
 QPushButton#danger:hover {
-    background-color: #661a1a;
+    background-color: #7a7a7a;
 }
 QPushButton#success {
-    background-color: #1a4d1a;
+    background-color: #636363;
     color: #00ff88;
     border: 1px solid #00ff88;
 }
 QPushButton#success:hover {
-    background-color: #1a661a;
+    background-color: #7a7a7a;
 }
 QLineEdit {
-    background-color: #252540;
-    color: #e0e0e0;
-    border: 1px solid #3d3d5c;
+    background-color: #2e2e2e;
+    color: #ffffff;
+    border: 1px solid #636363;
     border-radius: 4px;
     padding: 8px 12px;
-    font-size: 13px;
-    selection-background-color: #00ffff;
-    selection-color: #1a1a2e;
+    font-size: 16px;
+    selection-background-color: #FF00D8;
+    selection-color: #ffffff;
 }
 QLineEdit:focus {
-    border-color: #00ffff;
+    border-color: #FF00D8;
 }
 QLineEdit:disabled {
-    background-color: #1e1e30;
-    color: #555555;
+    background-color: #333333;
+    color: #666666;
 }
 QSpinBox {
-    background-color: #252540;
-    color: #e0e0e0;
-    border: 1px solid #3d3d5c;
+    background-color: #2e2e2e;
+    color: #ffffff;
+    border: 1px solid #636363;
     border-radius: 4px;
     padding: 6px 10px;
+    font-size: 16px;
 }
 QSpinBox:focus {
-    border-color: #00ffff;
+    border-color: #FF00D8;
 }
 QComboBox {
-    background-color: #252540;
-    color: #e0e0e0;
-    border: 1px solid #3d3d5c;
+    background-color: #2e2e2e;
+    color: #ffffff;
+    border: 1px solid #636363;
     border-radius: 4px;
     padding: 6px 10px;
     min-width: 150px;
+    font-size: 16px;
 }
 QComboBox:focus {
-    border-color: #00ffff;
+    border-color: #FF00D8;
 }
 QComboBox::drop-down {
     border: none;
     width: 30px;
 }
 QComboBox QAbstractItemView {
-    background-color: #252540;
-    color: #e0e0e0;
-    border: 1px solid #3d3d5c;
-    selection-background-color: #004d4d;
+    background-color: #2e2e2e;
+    color: #ffffff;
+    border: 1px solid #636363;
+    selection-background-color: #FF00D8;
 }
 QRadioButton {
-    color: #e0e0e0;
+    color: #ffffff;
     spacing: 8px;
     padding: 4px;
+    font-size: 16px;
 }
 QRadioButton::indicator {
-    width: 16px;
-    height: 16px;
-    border-radius: 8px;
-    border: 2px solid #3d3d5c;
-    background-color: #252540;
+    width: 18px;
+    height: 18px;
+    border-radius: 9px;
+    border: 2px solid #636363;
+    background-color: #2e2e2e;
 }
 QRadioButton::indicator:checked {
-    background-color: #00ffff;
-    border-color: #00ffff;
+    background-color: #FF00D8;
+    border-color: #FF00D8;
 }
 QRadioButton::indicator:hover {
-    border-color: #00cccc;
+    border-color: #FF00D8;
 }
 QCheckBox {
-    color: #e0e0e0;
+    color: #ffffff;
     spacing: 8px;
     padding: 4px;
+    font-size: 16px;
 }
 QCheckBox::indicator {
-    width: 16px;
-    height: 16px;
+    width: 18px;
+    height: 18px;
     border-radius: 3px;
-    border: 2px solid #3d3d5c;
-    background-color: #252540;
+    border: 2px solid #636363;
+    background-color: #2e2e2e;
 }
 QCheckBox::indicator:checked {
-    background-color: #00ffff;
-    border-color: #00ffff;
+    background-color: #FF00D8;
+    border-color: #FF00D8;
 }
 QTextEdit {
-    background-color: #0d0d1a;
+    background-color: #1e1e1e;
     color: #00ff88;
-    border: 1px solid #2d2d44;
+    border: 1px solid #4a4a4a;
     border-radius: 4px;
     padding: 8px;
     font-family: 'JetBrains Mono', 'Fira Code', 'Consolas', 'Ubuntu Mono', monospace;
-    font-size: 12px;
-    selection-background-color: #004d4d;
+    font-size: 14px;
+    selection-background-color: #FF00D8;
 }
 QTableWidget {
-    background-color: #1e1e30;
-    color: #e0e0e0;
-    border: 1px solid #2d2d44;
+    background-color: #2e2e2e;
+    color: #ffffff;
+    border: 1px solid #4a4a4a;
     border-radius: 4px;
-    gridline-color: #2d2d44;
-    selection-background-color: #004d4d;
-    selection-color: #00ffff;
+    gridline-color: #4a4a4a;
+    selection-background-color: #FF00D8;
+    selection-color: #ffffff;
+    font-size: 15px;
 }
 QTableWidget::item {
     padding: 6px 10px;
-    border-bottom: 1px solid #252540;
+    border-bottom: 1px solid #3a3a3a;
 }
 QTableWidget::item:selected {
-    background-color: #004d4d;
-    color: #00ffff;
+    background-color: #FF00D8;
+    color: #ffffff;
 }
 QHeaderView::section {
-    background-color: #252540;
-    color: #00cccc;
+    background-color: #4a4a4a;
+    color: #ffffff;
     padding: 8px;
     border: none;
-    border-bottom: 2px solid #00ffff;
+    border-bottom: 2px solid #FF00D8;
     font-weight: bold;
-    font-size: 12px;
+    font-size: 14px;
 }
 QProgressBar {
-    background-color: #1e1e30;
-    border: 1px solid #2d2d44;
+    background-color: #2e2e2e;
+    border: 1px solid #4a4a4a;
     border-radius: 8px;
     text-align: center;
-    color: #00ffff;
+    color: #ffffff;
     font-weight: bold;
-    font-size: 13px;
-    min-height: 28px;
+    font-size: 16px;
+    min-height: 30px;
 }
 QProgressBar::chunk {
     background: qlineargradient(x1:0, y1:0, x2:1, y2:0,
-        stop:0 #004d4d, stop:0.5 #00cccc, stop:1 #00ffff);
+        stop:0 #aa0090, stop:0.5 #FF00D8, stop:1 #ff44ee);
     border-radius: 7px;
 }
 QGroupBox {
-    border: 1px solid #2d2d44;
+    border: 1px solid #4a4a4a;
     border-radius: 6px;
     margin-top: 12px;
     padding-top: 16px;
     font-weight: bold;
-    color: #00cccc;
+    color: #FF00D8;
 }
 QGroupBox::title {
     subcontrol-origin: margin;
@@ -277,28 +282,28 @@ QGroupBox::title {
     padding: 0 6px;
 }
 QScrollBar:vertical {
-    background-color: #1a1a2e;
+    background-color: #393939;
     width: 10px;
     border: none;
 }
 QScrollBar::handle:vertical {
-    background-color: #3d3d5c;
+    background-color: #636363;
     border-radius: 5px;
     min-height: 30px;
 }
 QScrollBar::handle:vertical:hover {
-    background-color: #00cccc;
+    background-color: #FF00D8;
 }
 QScrollBar::add-line:vertical, QScrollBar::sub-line:vertical {
     height: 0;
 }
 QFrame#separator {
-    background-color: #2d2d44;
+    background-color: #4a4a4a;
     max-height: 1px;
 }
 QFrame#card {
-    background-color: #1e1e30;
-    border: 1px solid #2d2d44;
+    background-color: #2e2e2e;
+    border: 1px solid #4a4a4a;
     border-radius: 8px;
     padding: 16px;
 }
@@ -470,16 +475,22 @@ class InstallWorker(QThread):
     finished_signal = pyqtSignal(bool, str) # success, message
     stage_signal = pyqtSignal(int)          # stage index for checklist
 
+    # Signal to request squashfs path from UI
+    squashfs_prompt_signal = pyqtSignal()
+    squashfs_response = ""
+    squashfs_response_ready = False
+
     def __init__(self, config):
         super().__init__()
         self.config = config
         self._cancelled = False
         self.mount_target = "/mnt/target"
-        self.mount_live = "/mnt/live"
+        self.mount_live = ""
         self.install_source = ""
         self.luks_mapper = "luks-root"
         self.luks_device = ""
         self.original_data_partition = ""
+        self._source_was_premounted = False
 
     def cancel(self):
         self._cancelled = True
@@ -521,8 +532,28 @@ class InstallWorker(QThread):
                 source_path = squashfs
                 self.log(f"Detected squashfs: {source_path}", "SUCCESS")
             else:
-                source_path = "/"
-                self.log("No squashfs found, using root filesystem", "INFO")
+                # No squashfs found — ask user via signal
+                self.log("No squashfs auto-detected, requesting path from user...", "WARNING")
+                self.squashfs_response_ready = False
+                self.squashfs_response = ""
+                self.squashfs_prompt_signal.emit()
+
+                # Wait for user response (up to 5 minutes)
+                timeout = 300
+                waited = 0
+                while not self.squashfs_response_ready and waited < timeout:
+                    time.sleep(0.2)
+                    waited += 0.2
+                    if self._cancelled:
+                        self._cancel_and_cleanup()
+                        return
+
+                if self.squashfs_response and os.path.isfile(self.squashfs_response):
+                    source_path = self.squashfs_response
+                    self.log(f"User provided squashfs: {source_path}", "SUCCESS")
+                else:
+                    source_path = "/"
+                    self.log("No squashfs provided, using root filesystem", "INFO")
         else:
             if os.path.isfile(source_path):
                 self.log(f"Using custom source: {source_path}", "INFO")
@@ -844,17 +875,56 @@ class InstallWorker(QThread):
                 raise RuntimeError(f"Failed to mount EFI: {err}")
             self.log("✓ EFI partition mounted", "SUCCESS")
 
+    def _get_mount_dir(self):
+        """Create /mnt/installer, or /mnt/installer-01 etc if exists."""
+        base = "/mnt/installer"
+        if not os.path.exists(base):
+            os.makedirs(base, exist_ok=True)
+            return base
+        # Check if it's empty and usable
+        if not os.listdir(base):
+            return base
+        # Find next available numbered dir
+        for i in range(1, 100):
+            candidate = f"{base}-{i:02d}"
+            if not os.path.exists(candidate):
+                os.makedirs(candidate, exist_ok=True)
+                return candidate
+        raise RuntimeError("Could not create mount directory")
+
     def _mount_source(self):
         if self.install_source == "/":
             self.log("Using current root filesystem as source", "INFO")
             return
 
-        os.makedirs(self.mount_live, exist_ok=True)
-        rc, _, err = run_cmd(f"mount -t squashfs -o loop {self.install_source} {self.mount_live}")
+        squashfs_path = self.install_source
+
+        # Check if squashfs is already mounted somewhere
+        rc, mount_out, _ = run_cmd("mount")
+        if rc == 0:
+            for line in mount_out.splitlines():
+                if squashfs_path in line and "squashfs" in line:
+                    # Already mounted — extract the mount point
+                    parts = line.split(" on ")
+                    if len(parts) >= 2:
+                        existing_mount = parts[1].split(" type ")[0].strip()
+                        self.log(f"Squashfs already mounted at {existing_mount}", "INFO")
+                        self.install_source = existing_mount
+                        self.mount_live = existing_mount
+                        self._source_was_premounted = True
+                        return
+
+        # Not mounted yet — mount it ourselves
+        mount_dir = self._get_mount_dir()
+        self.mount_live = mount_dir
+        self.log(f"Mounting squashfs to {mount_dir}...", "PROGRESS")
+
+        rc, _, err = run_cmd(f"mount -t squashfs -o loop,ro {squashfs_path} {mount_dir}")
         if rc != 0:
             raise RuntimeError(f"Failed to mount source: {err}")
-        self.log(f"✓ Source mounted at {self.mount_live}", "SUCCESS")
-        self.install_source = self.mount_live
+        self.log(f"✓ Source mounted at {mount_dir}", "SUCCESS")
+        self.install_source = mount_dir
+        self._source_was_premounted = False
 
     def _extract_filesystem(self):
         source = self.install_source
@@ -1068,7 +1138,8 @@ class InstallWorker(QThread):
         ]:
             run_cmd(f"umount {path} 2>/dev/null || true")
 
-        if self.install_source == self.mount_live:
+        # Only unmount source if WE mounted it (not pre-mounted live session)
+        if not getattr(self, '_source_was_premounted', False) and self.mount_live:
             run_cmd(f"umount {self.mount_live} 2>/dev/null || true")
 
         if self.luks_device:
@@ -1155,7 +1226,7 @@ class WelcomeScreen(QWidget):
             lbl = QLabel(label)
             lbl.setStyleSheet("color: #888888; font-weight: bold;")
             val = QLabel(value)
-            val.setStyleSheet("color: #00ffff;")
+            val.setStyleSheet("color: #FF00D8;")
             info_layout.addWidget(lbl, row, 0)
             info_layout.addWidget(val, row, 1)
             row += 1
@@ -1188,14 +1259,14 @@ class WelcomeScreen(QWidget):
 
         # Circle background
         gradient = QLinearGradient(0, 0, 64, 64)
-        gradient.setColorAt(0, QColor("#004d4d"))
-        gradient.setColorAt(1, QColor("#00cccc"))
+        gradient.setColorAt(0, QColor("#7a0060"))
+        gradient.setColorAt(1, QColor("#FF00D8"))
         painter.setBrush(QBrush(gradient))
-        painter.setPen(QPen(QColor("#00ffff"), 2))
+        painter.setPen(QPen(QColor("#FF00D8"), 2))
         painter.drawEllipse(4, 4, 56, 56)
 
         # "G" letter
-        painter.setPen(QPen(QColor("#1a1a2e"), 3))
+        painter.setPen(QPen(QColor("#393939"), 3))
         font = QFont("DejaVu Sans", 28, QFont.Bold)
         painter.setFont(font)
         painter.drawText(QRect(0, 0, 64, 64), Qt.AlignCenter, "G")
@@ -1240,7 +1311,7 @@ class DiskSelectScreen(QWidget):
 
         # Warning label
         self.warning_label = QLabel("")
-        self.warning_label.setStyleSheet("color: #ff00ff; font-weight: bold; padding: 4px;")
+        self.warning_label.setStyleSheet("color: #ffff00; font-weight: bold; padding: 4px;")
         self.warning_label.setVisible(False)
         layout.addWidget(self.warning_label)
 
@@ -1281,7 +1352,7 @@ class DiskSelectScreen(QWidget):
 
             status_item = QTableWidgetItem(dev['status'])
             if dev['mounted']:
-                status_item.setForeground(QColor("#ff00ff"))
+                status_item.setForeground(QColor("#ff4444"))
             else:
                 status_item.setForeground(QColor("#00ff88"))
             self.table.setItem(i, 4, status_item)
@@ -1333,7 +1404,7 @@ class PartitionScreen(QWidget):
 
         # ── Option 1: Use Existing ──
         self.radio_existing = QRadioButton("Use Existing Partition Layout")
-        self.radio_existing.setStyleSheet("font-size: 14px; font-weight: bold; color: #00cccc;")
+        self.radio_existing.setStyleSheet("font-size: 17px; font-weight: bold; color: #FF00D8;")
         self.btn_group.addButton(self.radio_existing, 1)
         layout.addWidget(self.radio_existing)
 
@@ -1367,7 +1438,7 @@ class PartitionScreen(QWidget):
         existing_layout.addLayout(boot_existing_layout)
 
         warn = QLabel("⚠ Existing data on the selected partition will be overwritten")
-        warn.setStyleSheet("color: #ff00ff;")
+        warn.setStyleSheet("color: #ffff00;")
         existing_layout.addWidget(warn)
         self.existing_frame.setVisible(False)
         layout.addWidget(self.existing_frame)
@@ -1376,7 +1447,7 @@ class PartitionScreen(QWidget):
 
         # ── Option 2: Erase Disk ──
         self.radio_erase = QRadioButton("Erase Disk and Create New Layout")
-        self.radio_erase.setStyleSheet("font-size: 14px; font-weight: bold; color: #00cccc;")
+        self.radio_erase.setStyleSheet("font-size: 17px; font-weight: bold; color: #FF00D8;")
         self.btn_group.addButton(self.radio_erase, 2)
         layout.addWidget(self.radio_erase)
 
@@ -1474,7 +1545,7 @@ class UserScreen(QWidget):
 
         # Option 1: Create new user
         self.radio_new = QRadioButton("Create New User")
-        self.radio_new.setStyleSheet("font-size: 14px; font-weight: bold; color: #00cccc;")
+        self.radio_new.setStyleSheet("font-size: 17px; font-weight: bold; color: #FF00D8;")
         self.btn_group.addButton(self.radio_new, 1)
         layout.addWidget(self.radio_new)
 
@@ -1512,7 +1583,7 @@ class UserScreen(QWidget):
 
         # Option 2: Default profile
         self.radio_default = QRadioButton("Use Default Existing Profile")
-        self.radio_default.setStyleSheet("font-size: 14px; font-weight: bold; color: #00cccc;")
+        self.radio_default.setStyleSheet("font-size: 17px; font-weight: bold; color: #FF00D8;")
         self.btn_group.addButton(self.radio_default, 2)
         layout.addWidget(self.radio_default)
 
@@ -1587,7 +1658,7 @@ class EncryptionScreen(QWidget):
 
         # Option 1: Enable LUKS
         self.radio_luks = QRadioButton("Enable LUKS Encryption")
-        self.radio_luks.setStyleSheet("font-size: 14px; font-weight: bold; color: #00cccc;")
+        self.radio_luks.setStyleSheet("font-size: 17px; font-weight: bold; color: #FF00D8;")
         self.btn_group.addButton(self.radio_luks, 1)
         layout.addWidget(self.radio_luks)
 
@@ -1632,7 +1703,7 @@ class EncryptionScreen(QWidget):
 
         # Option 2: Skip
         self.radio_skip = QRadioButton("Skip Encryption")
-        self.radio_skip.setStyleSheet("font-size: 14px; font-weight: bold; color: #00cccc;")
+        self.radio_skip.setStyleSheet("font-size: 17px; font-weight: bold; color: #FF00D8;")
         self.btn_group.addButton(self.radio_skip, 2)
         layout.addWidget(self.radio_skip)
 
@@ -1753,16 +1824,16 @@ class ReviewScreen(QWidget):
         self.btn_install.setFixedWidth(180)
         self.btn_install.setStyleSheet("""
             QPushButton {
-                background-color: #1a4d1a;
-                color: #00ff88;
-                border: 2px solid #00ff88;
+                background-color: #636363;
+                color: #FF00D8;
+                border: 2px solid #FF00D8;
                 border-radius: 6px;
                 padding: 12px 30px;
-                font-size: 15px;
+                font-size: 18px;
                 font-weight: bold;
             }
             QPushButton:hover {
-                background-color: #1a661a;
+                background-color: #7a7a7a;
             }
         """)
         btn_layout.addWidget(self.btn_install)
@@ -1864,8 +1935,8 @@ class ProgressScreen(QWidget):
         # Current operation
         self.lbl_current_op = QLabel("Initializing...")
         self.lbl_current_op.setStyleSheet(
-            "font-size: 15px; font-weight: bold; color: #00ffff; padding: 8px; "
-            "background-color: #1e1e30; border-radius: 6px;")
+            "font-size: 18px; font-weight: bold; color: #FF00D8; padding: 8px; "
+            "background-color: #2e2e2e; border-radius: 6px;")
         self.lbl_current_op.setAlignment(Qt.AlignCenter)
         layout.addWidget(self.lbl_current_op)
 
@@ -1899,7 +1970,7 @@ class ProgressScreen(QWidget):
 
         for i, s in enumerate(stages):
             lbl = QLabel(f"  ○  {s}")
-            lbl.setStyleSheet("color: #555555; font-size: 12px; font-family: monospace;")
+            lbl.setStyleSheet("color: #555555; font-size: 17px; font-family: monospace;")
             stages_layout.addWidget(lbl)
             self.stage_labels.append(lbl)
 
@@ -1938,21 +2009,21 @@ class ProgressScreen(QWidget):
 
             if i < stage_idx:
                 lbl.setText(f"  ✓  {text}")
-                lbl.setStyleSheet("color: #00ff88; font-size: 12px; font-family: monospace;")
+                lbl.setStyleSheet("color: #00ff88; font-size: 14px; font-family: monospace;")
             elif i == stage_idx:
                 lbl.setText(f"  →  {text}")
-                lbl.setStyleSheet("color: #00ffff; font-size: 12px; font-family: monospace; font-weight: bold;")
+                lbl.setStyleSheet("color: #FF00D8; font-size: 14px; font-family: monospace; font-weight: bold;")
             else:
                 lbl.setText(f"  ○  {text}")
-                lbl.setStyleSheet("color: #555555; font-size: 12px; font-family: monospace;")
+                lbl.setStyleSheet("color: #666666; font-size: 14px; font-family: monospace;")
 
     def append_log(self, msg, level):
         color_map = {
             "INFO": "#e0e0e0",
             "SUCCESS": "#00ff88",
             "ERROR": "#ff4444",
-            "WARNING": "#ff00ff",
-            "PROGRESS": "#00cccc",
+            "WARNING": "#ffaa00",
+            "PROGRESS": "#FF00D8",
         }
         color = color_map.get(level, "#e0e0e0")
         timestamp = datetime.now().strftime("%H:%M:%S")
@@ -1988,18 +2059,18 @@ class CompleteScreen(QWidget):
         # Big success icon
         icon_label = QLabel("✓")
         icon_label.setStyleSheet(
-            "font-size: 72px; color: #00ff88; font-weight: bold;")
+            "font-size: 86px; color: #00ff88; font-weight: bold;")
         icon_label.setAlignment(Qt.AlignCenter)
         layout.addWidget(icon_label)
 
         title = QLabel("Installation Complete!")
         title.setObjectName("title")
-        title.setStyleSheet("font-size: 26px; color: #00ff88; font-weight: bold;")
+        title.setStyleSheet("font-size: 31px; color: #00ff88; font-weight: bold;")
         title.setAlignment(Qt.AlignCenter)
         layout.addWidget(title)
 
         subtitle = QLabel("Glitch Linux has been successfully installed!")
-        subtitle.setStyleSheet("font-size: 14px; color: #aaaaaa;")
+        subtitle.setStyleSheet("font-size: 17px; color: #aaaaaa;")
         subtitle.setAlignment(Qt.AlignCenter)
         layout.addWidget(subtitle)
 
@@ -2019,7 +2090,7 @@ class CompleteScreen(QWidget):
         layout.addWidget(self.chk_reboot, alignment=Qt.AlignCenter)
 
         warn = QLabel("Remove installation media before rebooting")
-        warn.setStyleSheet("color: #ffff00; font-size: 12px;")
+        warn.setStyleSheet("color: #ffff00; font-size: 17px;")
         warn.setAlignment(Qt.AlignCenter)
         layout.addWidget(warn)
 
@@ -2031,15 +2102,15 @@ class CompleteScreen(QWidget):
         self.btn_finish.setFixedWidth(200)
         self.btn_finish.setStyleSheet("""
             QPushButton {
-                background-color: #1a4d1a;
+                background-color: #636363;
                 color: #00ff88;
                 border: 2px solid #00ff88;
                 border-radius: 6px;
                 padding: 14px 40px;
-                font-size: 16px;
+                font-size: 19px;
                 font-weight: bold;
             }
-            QPushButton:hover { background-color: #1a661a; }
+            QPushButton:hover { background-color: #7a7a7a; }
         """)
         btn_layout.addWidget(self.btn_finish)
         btn_layout.addStretch()
@@ -2068,7 +2139,7 @@ class CompleteScreen(QWidget):
             lbl = QLabel(label)
             lbl.setStyleSheet("color: #888888; font-weight: bold;")
             val = QLabel(value)
-            val.setStyleSheet("color: #00ffff;")
+            val.setStyleSheet("color: #FF00D8;")
             self.summary_layout.addWidget(lbl, i, 0)
             self.summary_layout.addWidget(val, i, 1)
 
@@ -2108,7 +2179,7 @@ class GlitchInstaller(QMainWindow):
 
     def _build_screens(self):
         central = QWidget()
-        central.setStyleSheet("background-color: #1a1a2e;")
+        central.setStyleSheet("background-color: #393939;")
         self.setCentralWidget(central)
 
         main_layout = QVBoxLayout(central)
@@ -2250,7 +2321,19 @@ class GlitchInstaller(QMainWindow):
         self.worker.step_signal.connect(self.screen_progress.lbl_current_op.setText)
         self.worker.stage_signal.connect(self.screen_progress.update_stage)
         self.worker.finished_signal.connect(self._install_finished)
+        self.worker.squashfs_prompt_signal.connect(self._prompt_squashfs_path)
         self.worker.start()
+
+    def _prompt_squashfs_path(self):
+        """Prompt user for squashfs path when auto-detection fails."""
+        path, _ = QFileDialog.getOpenFileName(
+            self, "Select .squashfs File",
+            "/",
+            "Squashfs Files (*.squashfs);;All Files (*)"
+        )
+        if self.worker:
+            self.worker.squashfs_response = path if path else ""
+            self.worker.squashfs_response_ready = True
 
     def _cancel_install(self):
         reply = QMessageBox.question(
@@ -2327,17 +2410,17 @@ def main():
 
     # Dark palette as fallback
     palette = QPalette()
-    palette.setColor(QPalette.Window, QColor("#1a1a2e"))
-    palette.setColor(QPalette.WindowText, QColor("#e0e0e0"))
-    palette.setColor(QPalette.Base, QColor("#252540"))
-    palette.setColor(QPalette.AlternateBase, QColor("#1e1e30"))
-    palette.setColor(QPalette.ToolTipBase, QColor("#252540"))
-    palette.setColor(QPalette.ToolTipText, QColor("#e0e0e0"))
-    palette.setColor(QPalette.Text, QColor("#e0e0e0"))
-    palette.setColor(QPalette.Button, QColor("#2d2d44"))
-    palette.setColor(QPalette.ButtonText, QColor("#e0e0e0"))
-    palette.setColor(QPalette.Highlight, QColor("#004d4d"))
-    palette.setColor(QPalette.HighlightedText, QColor("#00ffff"))
+    palette.setColor(QPalette.Window, QColor("#393939"))
+    palette.setColor(QPalette.WindowText, QColor("#ffffff"))
+    palette.setColor(QPalette.Base, QColor("#2e2e2e"))
+    palette.setColor(QPalette.AlternateBase, QColor("#2e2e2e"))
+    palette.setColor(QPalette.ToolTipBase, QColor("#2e2e2e"))
+    palette.setColor(QPalette.ToolTipText, QColor("#ffffff"))
+    palette.setColor(QPalette.Text, QColor("#ffffff"))
+    palette.setColor(QPalette.Button, QColor("#636363"))
+    palette.setColor(QPalette.ButtonText, QColor("#ffffff"))
+    palette.setColor(QPalette.Highlight, QColor("#FF00D8"))
+    palette.setColor(QPalette.HighlightedText, QColor("#ffffff"))
     app.setPalette(palette)
 
     window = GlitchInstaller()
