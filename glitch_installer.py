@@ -64,7 +64,7 @@ QLabel {
 QLabel#title {
     font-size: 26px;
     font-weight: bold;
-    color: #FF00D8;
+    color: #FFFFFF;
     padding: 8px 0;
 }
 QLabel#subtitle {
@@ -75,7 +75,7 @@ QLabel#subtitle {
 QLabel#sectionHeader {
     font-size: 18px;
     font-weight: bold;
-    color: #FF00D8;
+    color: #FFFFFF;
     padding: 6px 0;
 }
 QLabel#stepIndicator {
@@ -95,7 +95,7 @@ QPushButton {
 }
 QPushButton:hover {
     background-color: #7a7a7a;
-    border-color: #FF00D8;
+    border-color: #FFFFFF;
 }
 QPushButton:pressed {
     background-color: #4a4a4a;
@@ -107,8 +107,8 @@ QPushButton:disabled {
 }
 QPushButton#primary {
     background-color: #636363;
-    color: #FF00D8;
-    border: 1px solid #FF00D8;
+    color: #FFFFFF;
+    border: 1px solid #FFFFFF;
 }
 QPushButton#primary:hover {
     background-color: #7a7a7a;
@@ -136,11 +136,11 @@ QLineEdit {
     border-radius: 4px;
     padding: 8px 12px;
     font-size: 16px;
-    selection-background-color: #FF00D8;
+    selection-background-color: #FFFFFF;
     selection-color: #ffffff;
 }
 QLineEdit:focus {
-    border-color: #FF00D8;
+    border-color: #FFFFFF;
 }
 QLineEdit:disabled {
     background-color: #333333;
@@ -155,7 +155,7 @@ QSpinBox {
     font-size: 16px;
 }
 QSpinBox:focus {
-    border-color: #FF00D8;
+    border-color: #FFFFFF;
 }
 QComboBox {
     background-color: #2e2e2e;
@@ -167,7 +167,7 @@ QComboBox {
     font-size: 16px;
 }
 QComboBox:focus {
-    border-color: #FF00D8;
+    border-color: #FFFFFF;
 }
 QComboBox::drop-down {
     border: none;
@@ -177,7 +177,7 @@ QComboBox QAbstractItemView {
     background-color: #2e2e2e;
     color: #ffffff;
     border: 1px solid #636363;
-    selection-background-color: #FF00D8;
+    selection-background-color: #FFFFFF;
 }
 QRadioButton {
     color: #ffffff;
@@ -193,11 +193,11 @@ QRadioButton::indicator {
     background-color: #2e2e2e;
 }
 QRadioButton::indicator:checked {
-    background-color: #FF00D8;
-    border-color: #FF00D8;
+    background-color: #FFFFFF;
+    border-color: #FFFFFF;
 }
 QRadioButton::indicator:hover {
-    border-color: #FF00D8;
+    border-color: #FFFFFF;
 }
 QCheckBox {
     color: #ffffff;
@@ -213,8 +213,8 @@ QCheckBox::indicator {
     background-color: #2e2e2e;
 }
 QCheckBox::indicator:checked {
-    background-color: #FF00D8;
-    border-color: #FF00D8;
+    background-color: #FFFFFF;
+    border-color: #FFFFFF;
 }
 QTextEdit {
     background-color: #1e1e1e;
@@ -224,7 +224,7 @@ QTextEdit {
     padding: 8px;
     font-family: 'JetBrains Mono', 'Fira Code', 'Consolas', 'Ubuntu Mono', monospace;
     font-size: 14px;
-    selection-background-color: #FF00D8;
+    selection-background-color: #FFFFFF;
 }
 QTableWidget {
     background-color: #2e2e2e;
@@ -232,7 +232,7 @@ QTableWidget {
     border: 1px solid #4a4a4a;
     border-radius: 4px;
     gridline-color: #4a4a4a;
-    selection-background-color: #FF00D8;
+    selection-background-color: #FFFFFF;
     selection-color: #ffffff;
     font-size: 15px;
 }
@@ -241,7 +241,7 @@ QTableWidget::item {
     border-bottom: 1px solid #3a3a3a;
 }
 QTableWidget::item:selected {
-    background-color: #FF00D8;
+    background-color: #FFFFFF;
     color: #ffffff;
 }
 QHeaderView::section {
@@ -249,7 +249,7 @@ QHeaderView::section {
     color: #ffffff;
     padding: 8px;
     border: none;
-    border-bottom: 2px solid #FF00D8;
+    border-bottom: 2px solid #FFFFFF;
     font-weight: bold;
     font-size: 14px;
 }
@@ -265,7 +265,7 @@ QProgressBar {
 }
 QProgressBar::chunk {
     background: qlineargradient(x1:0, y1:0, x2:1, y2:0,
-        stop:0 #aa0090, stop:0.5 #FF00D8, stop:1 #ff44ee);
+        stop:0 #aa0090, stop:0.5 #FFFFFF, stop:1 #ff44ee);
     border-radius: 7px;
 }
 QGroupBox {
@@ -274,7 +274,7 @@ QGroupBox {
     margin-top: 12px;
     padding-top: 16px;
     font-weight: bold;
-    color: #FF00D8;
+    color: #FFFFFF;
 }
 QGroupBox::title {
     subcontrol-origin: margin;
@@ -292,7 +292,7 @@ QScrollBar::handle:vertical {
     min-height: 30px;
 }
 QScrollBar::handle:vertical:hover {
-    background-color: #FF00D8;
+    background-color: #FFFFFF;
 }
 QScrollBar::add-line:vertical, QScrollBar::sub-line:vertical {
     height: 0;
@@ -1226,7 +1226,7 @@ class WelcomeScreen(QWidget):
             lbl = QLabel(label)
             lbl.setStyleSheet("color: #888888; font-weight: bold;")
             val = QLabel(value)
-            val.setStyleSheet("color: #FF00D8;")
+            val.setStyleSheet("color: #FFFFFF;")
             info_layout.addWidget(lbl, row, 0)
             info_layout.addWidget(val, row, 1)
             row += 1
@@ -1260,9 +1260,9 @@ class WelcomeScreen(QWidget):
         # Circle background
         gradient = QLinearGradient(0, 0, 64, 64)
         gradient.setColorAt(0, QColor("#7a0060"))
-        gradient.setColorAt(1, QColor("#FF00D8"))
+        gradient.setColorAt(1, QColor("#FFFFFF"))
         painter.setBrush(QBrush(gradient))
-        painter.setPen(QPen(QColor("#FF00D8"), 2))
+        painter.setPen(QPen(QColor("#FFFFFF"), 2))
         painter.drawEllipse(4, 4, 56, 56)
 
         # "G" letter
@@ -1404,7 +1404,7 @@ class PartitionScreen(QWidget):
 
         # ── Option 1: Use Existing ──
         self.radio_existing = QRadioButton("Use Existing Partition Layout")
-        self.radio_existing.setStyleSheet("font-size: 17px; font-weight: bold; color: #FF00D8;")
+        self.radio_existing.setStyleSheet("font-size: 17px; font-weight: bold; color: #FFFFFF;")
         self.btn_group.addButton(self.radio_existing, 1)
         layout.addWidget(self.radio_existing)
 
@@ -1447,7 +1447,7 @@ class PartitionScreen(QWidget):
 
         # ── Option 2: Erase Disk ──
         self.radio_erase = QRadioButton("Erase Disk and Create New Layout")
-        self.radio_erase.setStyleSheet("font-size: 17px; font-weight: bold; color: #FF00D8;")
+        self.radio_erase.setStyleSheet("font-size: 17px; font-weight: bold; color: #FFFFFF;")
         self.btn_group.addButton(self.radio_erase, 2)
         layout.addWidget(self.radio_erase)
 
@@ -1545,7 +1545,7 @@ class UserScreen(QWidget):
 
         # Option 1: Create new user
         self.radio_new = QRadioButton("Create New User")
-        self.radio_new.setStyleSheet("font-size: 17px; font-weight: bold; color: #FF00D8;")
+        self.radio_new.setStyleSheet("font-size: 17px; font-weight: bold; color: #FFFFFF;")
         self.btn_group.addButton(self.radio_new, 1)
         layout.addWidget(self.radio_new)
 
@@ -1583,7 +1583,7 @@ class UserScreen(QWidget):
 
         # Option 2: Default profile
         self.radio_default = QRadioButton("Use Default Existing Profile")
-        self.radio_default.setStyleSheet("font-size: 17px; font-weight: bold; color: #FF00D8;")
+        self.radio_default.setStyleSheet("font-size: 17px; font-weight: bold; color: #FFFFFF;")
         self.btn_group.addButton(self.radio_default, 2)
         layout.addWidget(self.radio_default)
 
@@ -1658,7 +1658,7 @@ class EncryptionScreen(QWidget):
 
         # Option 1: Enable LUKS
         self.radio_luks = QRadioButton("Enable LUKS Encryption")
-        self.radio_luks.setStyleSheet("font-size: 17px; font-weight: bold; color: #FF00D8;")
+        self.radio_luks.setStyleSheet("font-size: 17px; font-weight: bold; color: #FFFFFF;")
         self.btn_group.addButton(self.radio_luks, 1)
         layout.addWidget(self.radio_luks)
 
@@ -1703,7 +1703,7 @@ class EncryptionScreen(QWidget):
 
         # Option 2: Skip
         self.radio_skip = QRadioButton("Skip Encryption")
-        self.radio_skip.setStyleSheet("font-size: 17px; font-weight: bold; color: #FF00D8;")
+        self.radio_skip.setStyleSheet("font-size: 17px; font-weight: bold; color: #FFFFFF;")
         self.btn_group.addButton(self.radio_skip, 2)
         layout.addWidget(self.radio_skip)
 
@@ -1825,8 +1825,8 @@ class ReviewScreen(QWidget):
         self.btn_install.setStyleSheet("""
             QPushButton {
                 background-color: #636363;
-                color: #FF00D8;
-                border: 2px solid #FF00D8;
+                color: #FFFFFF;
+                border: 2px solid #FFFFFF;
                 border-radius: 6px;
                 padding: 12px 30px;
                 font-size: 18px;
@@ -1935,7 +1935,7 @@ class ProgressScreen(QWidget):
         # Current operation
         self.lbl_current_op = QLabel("Initializing...")
         self.lbl_current_op.setStyleSheet(
-            "font-size: 18px; font-weight: bold; color: #FF00D8; padding: 8px; "
+            "font-size: 18px; font-weight: bold; color: #FFFFFF; padding: 8px; "
             "background-color: #2e2e2e; border-radius: 6px;")
         self.lbl_current_op.setAlignment(Qt.AlignCenter)
         layout.addWidget(self.lbl_current_op)
@@ -2012,7 +2012,7 @@ class ProgressScreen(QWidget):
                 lbl.setStyleSheet("color: #00ff88; font-size: 14px; font-family: monospace;")
             elif i == stage_idx:
                 lbl.setText(f"  →  {text}")
-                lbl.setStyleSheet("color: #FF00D8; font-size: 14px; font-family: monospace; font-weight: bold;")
+                lbl.setStyleSheet("color: #FFFFFF; font-size: 14px; font-family: monospace; font-weight: bold;")
             else:
                 lbl.setText(f"  ○  {text}")
                 lbl.setStyleSheet("color: #666666; font-size: 14px; font-family: monospace;")
@@ -2023,7 +2023,7 @@ class ProgressScreen(QWidget):
             "SUCCESS": "#00ff88",
             "ERROR": "#ff4444",
             "WARNING": "#ffaa00",
-            "PROGRESS": "#FF00D8",
+            "PROGRESS": "#FFFFFF",
         }
         color = color_map.get(level, "#e0e0e0")
         timestamp = datetime.now().strftime("%H:%M:%S")
@@ -2139,7 +2139,7 @@ class CompleteScreen(QWidget):
             lbl = QLabel(label)
             lbl.setStyleSheet("color: #888888; font-weight: bold;")
             val = QLabel(value)
-            val.setStyleSheet("color: #FF00D8;")
+            val.setStyleSheet("color: #FFFFFF;")
             self.summary_layout.addWidget(lbl, i, 0)
             self.summary_layout.addWidget(val, i, 1)
 
@@ -2419,7 +2419,7 @@ def main():
     palette.setColor(QPalette.Text, QColor("#ffffff"))
     palette.setColor(QPalette.Button, QColor("#636363"))
     palette.setColor(QPalette.ButtonText, QColor("#ffffff"))
-    palette.setColor(QPalette.Highlight, QColor("#FF00D8"))
+    palette.setColor(QPalette.Highlight, QColor("#FFFFFF"))
     palette.setColor(QPalette.HighlightedText, QColor("#ffffff"))
     app.setPalette(palette)
 
