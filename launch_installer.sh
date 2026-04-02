@@ -13,7 +13,7 @@ YELLOW='\033[1;33m'
 WHITE='\033[1;37m'
 NC='\033[0m'
 
-INSTALLER_URL="https://raw.githubusercontent.com/MarcusWinsnes/Glitch-GUI-Installer/refs/heads/main/glitch_installer.py"
+INSTALLER_URL="https://raw.githubusercontent.com/GlitchLinux/Glitch-GUI-Installer/refs/heads/main/glitch_installer.py"
 INSTALLER_PATH="/tmp/glitch_installer.py"
 LOG_FILE="/tmp/glitch_installer_launch.log"
 
