@@ -8,4 +8,3 @@ BASE64_DATA="iVBORw0KGgoAAAANSUhEUgAAAgAAAAIACAYAAAD0eNT6AAAACXBIWXMAAA7DAAAOwwH
 
 echo "$BASE64_DATA" | base64 -d > "$OUTPUT"
 echo "Reconstructed: $OUTPUT ($(wc -c < "$OUTPUT") bytes)"
-exit
