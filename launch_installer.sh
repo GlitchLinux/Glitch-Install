@@ -17,8 +17,6 @@ INSTALLER_URL="https://raw.githubusercontent.com/GlitchLinux/Glitch-GUI-Installe
 INSTALLER_PATH="/tmp/glitch_installer.py"
 LOG_FILE="/tmp/glitch_installer_launch.log"
 
-rm 
-
 print_banner() {
     echo -e "${CYAN}"
     echo "╔═══════════════════════════════════════╗"
