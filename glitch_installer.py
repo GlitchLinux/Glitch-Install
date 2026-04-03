@@ -237,8 +237,8 @@ QCheckBox::indicator:checked {
     border-color: #FFFFFF;
 }
 QTextEdit {
-    background-color: #1e1e1e;
-    color: #00ff88;
+    background-color: #1d1d1d;
+    color: #ffffff;
     border: 1px solid #4a4a4a;
     border-radius: 4px;
     padding: 8px;
@@ -284,8 +284,7 @@ QProgressBar {
     min-height: 30px;
 }
 QProgressBar::chunk {
-    background: qlineargradient(x1:0, y1:0, x2:1, y2:0,
-        stop:0 #aa0090, stop:0.5 #FFFFFF, stop:1 #ff44ee);
+    background-color: #707070;
     border-radius: 7px;
 }
 QGroupBox {
@@ -606,7 +605,7 @@ class InstallWorker(QThread):
         stage += 1
         self.step_signal.emit("Partitioning disk...")
         self.stage_signal.emit(2)
-        self.progress_signal.emit(10)
+        self.progress_signal.emit(3)
 
         if cfg['partitioning'] == 'erase':
             self._create_partitions(cfg)
@@ -621,7 +620,7 @@ class InstallWorker(QThread):
         stage += 1
         self.step_signal.emit("Formatting partitions...")
         self.stage_signal.emit(3)
-        self.progress_signal.emit(18)
+        self.progress_signal.emit(5)
         self._format_partitions(cfg)
 
         if self._cancelled:
@@ -633,7 +632,7 @@ class InstallWorker(QThread):
         if cfg.get('luks_enabled'):
             self.step_signal.emit("Setting up LUKS encryption...")
             self.stage_signal.emit(4)
-            self.progress_signal.emit(22)
+            self.progress_signal.emit(6)
             self._setup_luks(cfg)
         else:
             self.stage_signal.emit(4)
@@ -647,7 +646,7 @@ class InstallWorker(QThread):
         stage += 1
         self.step_signal.emit("Mounting target partitions...")
         self.stage_signal.emit(5)
-        self.progress_signal.emit(25)
+        self.progress_signal.emit(7)
         self._mount_target(cfg)
 
         if self._cancelled:
@@ -658,7 +657,7 @@ class InstallWorker(QThread):
         stage += 1
         self.step_signal.emit("Mounting source filesystem...")
         self.stage_signal.emit(6)
-        self.progress_signal.emit(28)
+        self.progress_signal.emit(8)
         self._mount_source()
 
         if self._cancelled:
@@ -669,7 +668,7 @@ class InstallWorker(QThread):
         stage += 1
         self.step_signal.emit("Extracting filesystem...")
         self.stage_signal.emit(7)
-        self.progress_signal.emit(30)
+        self.progress_signal.emit(9)
         self._extract_filesystem()
 
         if self._cancelled:
@@ -680,7 +679,7 @@ class InstallWorker(QThread):
         stage += 1
         self.step_signal.emit("Configuring system files...")
         self.stage_signal.emit(8)
-        self.progress_signal.emit(75)
+        self.progress_signal.emit(82)
         self._configure_system(cfg)
 
         if self._cancelled:
@@ -689,9 +688,9 @@ class InstallWorker(QThread):
 
         # ── Stage 9: Install bootloader ──
         stage += 1
-        self.step_signal.emit("Installing GRUB bootloader...")
+        self.step_signal.emit("Installing GRUB bootloader")
         self.stage_signal.emit(9)
-        self.progress_signal.emit(82)
+        self.progress_signal.emit(88)
         self._install_grub(cfg)
 
         if self._cancelled:
@@ -700,16 +699,16 @@ class InstallWorker(QThread):
 
         # ── Stage 10: User setup ──
         stage += 1
-        self.step_signal.emit("Setting up user account...")
+        self.step_signal.emit("Setting up user account")
         self.stage_signal.emit(10)
-        self.progress_signal.emit(90)
+        self.progress_signal.emit(93)
         self._setup_user(cfg)
 
         # ── Stage 11: Verify ──
         stage += 1
-        self.step_signal.emit("Verifying installation...")
+        self.step_signal.emit("Verifying installation")
         self.stage_signal.emit(11)
-        self.progress_signal.emit(95)
+        self.progress_signal.emit(96)
         self._verify_installation()
 
         # ── Done ──
@@ -775,7 +774,7 @@ class InstallWorker(QThread):
 
         elif boot_type == 'uefi':
             self.exec_cmd(f"parted -s {dev} mklabel gpt", "Creating GPT partition table")
-            self.exec_cmd(f"parted -s {dev} mkpart EFI fat32 1MiB 99MiB")
+            self.exec_cmd(f"parted -s {dev} mkpart EFI fat32 1MiB 97MiB")
             self.exec_cmd(f"parted -s {dev} set 1 esp on")
             cfg['efi_partition'] = f"{dev}{sep}1"
             self.log(f"✓ EFI partition created: {cfg['efi_partition']}", "SUCCESS")
@@ -964,40 +963,90 @@ class InstallWorker(QThread):
 
         exclude_str = " ".join(excludes)
 
+        # ── Measure source filesystem size for realistic progress ──
+        self.log("Calculating source filesystem size...", "PROGRESS")
+        source_size_mb = 0
+        try:
+            rc, out, _ = run_cmd(f"du -sm {source}/ 2>/dev/null | head -1")
+            if rc == 0 and out:
+                source_size_mb = int(out.split()[0])
+                self.log(f"Source filesystem size: {source_size_mb} MB", "INFO")
+        except Exception:
+            pass
+
+        if source_size_mb <= 0:
+            # Fallback: try df on mounted source
+            try:
+                rc, out, _ = run_cmd(f"df -m {source} 2>/dev/null | tail -1")
+                if rc == 0 and out:
+                    parts = out.split()
+                    if len(parts) >= 3:
+                        source_size_mb = int(parts[2])  # "Used" column
+                        self.log(f"Source filesystem size (df): {source_size_mb} MB", "INFO")
+            except Exception:
+                pass
+
+        use_size_tracking = source_size_mb > 0
+
         self.log("Starting filesystem extraction (this may take several minutes)...", "PROGRESS")
 
-        # Use rsync with progress output
-        cmd = f"rsync -a --info=progress2 {exclude_str} {source}/ {target}/"
+        # Start rsync (no --info=progress2, we track size ourselves)
+        cmd = f"rsync -a {exclude_str} {source}/ {target}/"
         process = subprocess.Popen(
             cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT,
             universal_newlines=True
         )
 
-        last_pct = 30
-        for line in process.stdout:
-            line = line.strip()
-            if self._cancelled:
-                process.kill()
-                return
+        # Progress range: 10% to 80% of full install is rsync
+        RSYNC_START = 10
+        RSYNC_END = 80
+        RSYNC_RANGE = RSYNC_END - RSYNC_START
 
-            # Parse rsync progress
-            match = re.search(r'(\d+)%', line)
-            if match:
-                pct = int(match.group(1))
-                # Map rsync 0-100% to our 30-74%
-                mapped = 30 + int(pct * 0.44)
-                if mapped != last_pct:
-                    self.progress_signal.emit(mapped)
-                    last_pct = mapped
-                    if pct % 10 == 0:
-                        self.log(f"Filesystem extraction: {pct}%", "PROGRESS")
+        last_pct = RSYNC_START
+        self.progress_signal.emit(RSYNC_START)
+
+        if use_size_tracking:
+            # Poll target size in background while rsync runs
+            while process.poll() is None:
+                if self._cancelled:
+                    process.kill()
+                    return
+                time.sleep(2)
+
+                # Check how much data has landed on the target
+                try:
+                    rc, out, _ = run_cmd(f"du -sm {target}/ 2>/dev/null | head -1", timeout=30)
+                    if rc == 0 and out:
+                        target_size_mb = int(out.split()[0])
+                        ratio = min(target_size_mb / source_size_mb, 1.0)
+                        mapped = RSYNC_START + int(ratio * RSYNC_RANGE)
+                        if mapped != last_pct:
+                            self.progress_signal.emit(mapped)
+                            pct_done = int(ratio * 100)
+                            self.log(
+                                f"Extracting: {target_size_mb} / {source_size_mb} MB ({pct_done}%)",
+                                "PROGRESS"
+                            )
+                            last_pct = mapped
+                except Exception:
+                    pass
+        else:
+            # Fallback: just wait for rsync with a simple ticker
+            while process.poll() is None:
+                if self._cancelled:
+                    process.kill()
+                    return
+                time.sleep(3)
+                if last_pct < RSYNC_END - 5:
+                    last_pct += 1
+                    self.progress_signal.emit(last_pct)
 
         process.wait()
         if process.returncode != 0 and process.returncode is not None:
             self.log("rsync completed with warnings", "WARNING")
 
         self.log("✓ Filesystem extracted successfully", "SUCCESS")
-        self.progress_signal.emit(74)
+        self.progress_signal.emit(RSYNC_END)
 
     def _configure_system(self, cfg):
         target = self.mount_target
@@ -1081,29 +1130,51 @@ class InstallWorker(QThread):
             )
         elif boot_type == 'uefi':
             self.log("Installing GRUB for UEFI...", "PROGRESS")
-            # Clean existing EFI dirs
-            for d in ["BOOT", "Bonsai", "debian"]:
-                efi_dir = f"{target}/boot/efi/EFI/{d}"
-                if os.path.isdir(efi_dir):
-                    shutil.rmtree(efi_dir, ignore_errors=True)
+            # Clean existing EFI dirs before install
+            efi_base = f"{target}/boot/efi/EFI"
+            if os.path.isdir(efi_base):
+                for d in os.listdir(efi_base):
+                    efi_dir = os.path.join(efi_base, d)
+                    if os.path.isdir(efi_dir):
+                        shutil.rmtree(efi_dir, ignore_errors=True)
 
             rc, _, err = run_cmd(
                 f"chroot {target} /bin/bash -c 'DEBIAN_FRONTEND=noninteractive apt-get update -qq && apt-get install -y -qq grub-efi-amd64 efibootmgr && grub-install --target=x86_64-efi --efi-directory=/boot/efi --bootloader-id=GlitchLinux --recheck && update-grub'",
                 timeout=300
             )
 
-            # Copy EFI files to fallback BOOT directory
-            self.log("Copying EFI files to fallback BOOT directory...", "PROGRESS")
-            efi_source = f"{target}/boot/efi/EFI/GlitchLinux"
-            efi_boot_dir = f"{target}/boot/efi/EFI/BOOT"
-            os.makedirs(efi_boot_dir, exist_ok=True)
-            grubx64_src = os.path.join(efi_source, "grubx64.efi")
-            bootx64_dst = os.path.join(efi_boot_dir, "BOOTx64.EFI")
+            # Dynamic EFI directory fix: find whatever directory GRUB created,
+            # rename it to BOOT, and copy grubx64.efi to bootx64.efi
+            self.log("Fixing EFI boot directory...", "PROGRESS")
+            efi_boot_target = os.path.join(efi_base, "BOOT")
+
+            # Find the directory GRUB created (anything that is NOT "BOOT")
+            created_dir = None
+            if os.path.isdir(efi_base):
+                for d in os.listdir(efi_base):
+                    full = os.path.join(efi_base, d)
+                    if os.path.isdir(full) and d.upper() != "BOOT":
+                        created_dir = full
+                        self.log(f"Found GRUB EFI directory: /boot/efi/EFI/{d}", "INFO")
+                        break
+
+            if created_dir:
+                # Rename the GRUB-created directory to BOOT
+                run_cmd(f"mv -f '{created_dir}' '{efi_boot_target}'")
+                self.log(f"✓ Renamed {os.path.basename(created_dir)} → BOOT", "SUCCESS")
+            elif not os.path.isdir(efi_boot_target):
+                # GRUB may have created BOOT directly (unlikely but handle it)
+                os.makedirs(efi_boot_target, exist_ok=True)
+                self.log("Created /boot/efi/EFI/BOOT/ (no GRUB directory found)", "WARNING")
+
+            # Copy grubx64.efi to bootx64.efi inside BOOT
+            grubx64_src = os.path.join(efi_boot_target, "grubx64.efi")
+            bootx64_dst = os.path.join(efi_boot_target, "bootx64.efi")
             if os.path.exists(grubx64_src):
-                shutil.copy2(grubx64_src, bootx64_dst)
-                self.log("✓ grubx64.efi copied to /boot/efi/EFI/BOOT/BOOTx64.EFI", "SUCCESS")
+                run_cmd(f"cp -f '{grubx64_src}' '{bootx64_dst}'")
+                self.log("✓ grubx64.efi copied to bootx64.efi", "SUCCESS")
             else:
-                self.log("⚠ grubx64.efi not found, skipping BOOT fallback copy", "INFO")
+                self.log("⚠ grubx64.efi not found in BOOT directory", "WARNING")
 
         self.log("✓ GRUB bootloader installed", "SUCCESS")
 
@@ -1963,7 +2034,7 @@ class ProgressScreen(QWidget):
         layout.setContentsMargins(30, 20, 30, 20)
         layout.setSpacing(10)
 
-        title = QLabel("Installing Glitch Linux...")
+        title = QLabel("Installing Glitch Linux")
         title.setObjectName("title")
         layout.addWidget(title)
 
@@ -1988,43 +2059,15 @@ class ProgressScreen(QWidget):
         self.progress_bar.setFixedHeight(32)
         layout.addWidget(self.progress_bar)
 
-        # Stage checklist
-        self.stage_labels = []
-        stages = [
-            "Detect installation source",
-            "Prepare target device",
-            "Create partitions",
-            "Format partitions",
-            "LUKS encryption",
-            "Mount target",
-            "Mount source",
-            "Extract filesystem",
-            "Configure system",
-            "Install bootloader",
-            "Setup user account",
-            "Verify installation"
-        ]
-
-        stages_card = CardFrame()
-        stages_layout = QVBoxLayout(stages_card)
-        stages_layout.setSpacing(4)
-
-        for i, s in enumerate(stages):
-            lbl = QLabel(f"  ○  {s}")
-            lbl.setStyleSheet("color: #555555; font-size: 17px; font-family: monospace;")
-            stages_layout.addWidget(lbl)
-            self.stage_labels.append(lbl)
-
-        scroll = QScrollArea()
-        scroll.setWidget(stages_card)
-        scroll.setWidgetResizable(True)
-        scroll.setMaximumHeight(160)
-        layout.addWidget(scroll)
-
-        # Log output
+        # Single unified log output (no stage checklist)
         self.log_output = QTextEdit()
         self.log_output.setReadOnly(True)
-        self.log_output.setMinimumHeight(150)
+        self.log_output.setMinimumHeight(300)
+        self.log_output.setStyleSheet(
+            "background-color: #1d1d1d; color: #ffffff; "
+            "border: 1px solid #4a4a4a; border-radius: 4px; padding: 8px; "
+            "font-family: 'JetBrains Mono', 'Fira Code', 'Consolas', 'Ubuntu Mono', monospace; "
+            "font-size: 14px;")
         layout.addWidget(self.log_output)
 
         # Time
@@ -2039,39 +2082,15 @@ class ProgressScreen(QWidget):
         layout.addLayout(time_layout)
 
     def update_stage(self, stage_idx):
-        for i, lbl in enumerate(self.stage_labels):
-            text = lbl.text()
-            # Remove prefix
-            text = text.lstrip()
-            for prefix in ["✓ ", "→ ", "○ ", "  "]:
-                if text.startswith(prefix):
-                    text = text[len(prefix):]
-                    break
-
-            if i < stage_idx:
-                lbl.setText(f"  ✓  {text}")
-                lbl.setStyleSheet("color: #00ff88; font-size: 14px; font-family: monospace;")
-            elif i == stage_idx:
-                lbl.setText(f"  →  {text}")
-                lbl.setStyleSheet("color: #FFFFFF; font-size: 14px; font-family: monospace; font-weight: bold;")
-            else:
-                lbl.setText(f"  ○  {text}")
-                lbl.setStyleSheet("color: #666666; font-size: 14px; font-family: monospace;")
+        """No-op — kept for API compatibility with worker signals."""
+        pass
 
     def append_log(self, msg, level):
-        color_map = {
-            "INFO": "#e0e0e0",
-            "SUCCESS": "#00ff88",
-            "ERROR": "#ff4444",
-            "WARNING": "#ffaa00",
-            "PROGRESS": "#FFFFFF",
-        }
-        color = color_map.get(level, "#e0e0e0")
+        # Uniform white text on dark background
         timestamp = datetime.now().strftime("%H:%M:%S")
         self.log_output.append(
-            f'<span style="color:#555555">[{timestamp}]</span> '
-            f'<span style="color:{color}">[{level}]</span> '
-            f'<span style="color:{color}">{msg}</span>'
+            f'<span style="color:#666666">[{timestamp}]</span> '
+            f'<span style="color:#ffffff">{msg}</span>'
         )
         # Auto-scroll
         scrollbar = self.log_output.verticalScrollBar()
@@ -2083,7 +2102,6 @@ class ProgressScreen(QWidget):
             minutes = elapsed // 60
             seconds = elapsed % 60
             self.lbl_elapsed.setText(f"Elapsed: {minutes}:{seconds:02d}")
-
 
 class CompleteScreen(QWidget):
     def __init__(self, parent=None):
@@ -2230,6 +2248,23 @@ class GlitchInstaller(QMainWindow):
 
         main_layout = QVBoxLayout(central)
         main_layout.setContentsMargins(0, 0, 0, 0)
+
+        # Persistent logo bar (visible on all screens)
+        logo_bar = QHBoxLayout()
+        logo_bar.setContentsMargins(12, 8, 12, 0)
+        self.persistent_logo = QLabel()
+        self.persistent_logo.setFixedSize(40, 40)
+        self.persistent_logo.setStyleSheet("background: transparent;")
+        logo_path = _reconstruct_logo()
+        if logo_path and os.path.exists(logo_path):
+            pixmap = QPixmap(logo_path)
+            if not pixmap.isNull():
+                self.persistent_logo.setPixmap(
+                    pixmap.scaled(40, 40, Qt.KeepAspectRatio, Qt.SmoothTransformation)
+                )
+        logo_bar.addWidget(self.persistent_logo)
+        logo_bar.addStretch()
+        main_layout.addLayout(logo_bar)
 
         self.stack = QStackedWidget()
         main_layout.addWidget(self.stack)
