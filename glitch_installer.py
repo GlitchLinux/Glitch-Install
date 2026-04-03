@@ -775,7 +775,7 @@ class InstallWorker(QThread):
 
         elif boot_type == 'uefi':
             self.exec_cmd(f"parted -s {dev} mklabel gpt", "Creating GPT partition table")
-            self.exec_cmd(f"parted -s {dev} mkpart EFI fat32 1MiB 97MiB")
+            self.exec_cmd(f"parted -s {dev} mkpart EFI fat32 1MiB 99MiB")
             self.exec_cmd(f"parted -s {dev} set 1 esp on")
             cfg['efi_partition'] = f"{dev}{sep}1"
             self.log(f"✓ EFI partition created: {cfg['efi_partition']}", "SUCCESS")
