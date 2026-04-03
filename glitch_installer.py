@@ -688,7 +688,7 @@ class InstallWorker(QThread):
 
         # ── Stage 9: Install bootloader ──
         stage += 1
-        self.step_signal.emit("Installing GRUB bootloader")
+        self.step_signal.emit("Installing GRUB bootloader...")
         self.stage_signal.emit(9)
         self.progress_signal.emit(88)
         self._install_grub(cfg)
@@ -699,14 +699,14 @@ class InstallWorker(QThread):
 
         # ── Stage 10: User setup ──
         stage += 1
-        self.step_signal.emit("Setting up user account")
+        self.step_signal.emit("Setting up user account...")
         self.stage_signal.emit(10)
         self.progress_signal.emit(93)
         self._setup_user(cfg)
 
         # ── Stage 11: Verify ──
         stage += 1
-        self.step_signal.emit("Verifying installation")
+        self.step_signal.emit("Verifying installation...")
         self.stage_signal.emit(11)
         self.progress_signal.emit(96)
         self._verify_installation()
@@ -1064,6 +1064,13 @@ class InstallWorker(QThread):
             run_cmd(f"cp /etc/resolv.conf {target}/etc/resolv.conf")
         self.log("✓ Chroot environment ready", "SUCCESS")
 
+        # Clean live-boot remnants from source system (critical for LUKS boot)
+        self.log("Cleaning live-boot and Ventoy remnants from target...", "PROGRESS")
+        run_cmd(f"chroot {target} /bin/bash -c 'DEBIAN_FRONTEND=noninteractive dpkg --purge live-boot live-boot-doc live-boot-initramfs-tools live-config live-config-doc live-config-systemd live-tools user-setup 2>/dev/null || true'", timeout=60)
+        # Remove orphaned Ventoy files that bloat initramfs
+        run_cmd(f"rm -f {target}/usr/share/initramfs-tools/hooks/vtoy-hook.sh {target}/sbin/vtoytool {target}/sbin/vtoypartx {target}/sbin/vtoydump {target}/sbin/vtoydrivers 2>/dev/null || true")
+        self.log("✓ Target cleaned of live-boot/Ventoy remnants", "SUCCESS")
+
         # Update fstab
         self.log("Generating /etc/fstab...", "PROGRESS")
         fstab_lines = ["# <file system> <mount point> <type> <options> <dump> <pass>"]
@@ -1100,18 +1107,51 @@ class InstallWorker(QThread):
             self.log("Configuring crypttab...", "PROGRESS")
             rc, luks_uuid, _ = run_cmd(f"blkid -o value -s UUID {self.original_data_partition}")
             if luks_uuid:
-                crypttab = f"{self.luks_mapper} UUID={luks_uuid} none luks,discard\n"
+                crypttab = f"{self.luks_mapper} UUID={luks_uuid} none luks,discard,initramfs\n"
                 with open(f"{target}/etc/crypttab", 'w') as f:
                     f.write(crypttab)
                 self.log("✓ crypttab configured", "SUCCESS")
 
             # Update initramfs for LUKS
-            self.log("Updating initramfs for LUKS support...", "PROGRESS")
+            self.log("Preparing target for LUKS boot...", "PROGRESS")
+
+            # Purge live-boot remnants that interfere with normal boot
+            self.log("Purging live-boot remnants...", "PROGRESS")
+            run_cmd(f"chroot {target} /bin/bash -c 'DEBIAN_FRONTEND=noninteractive dpkg --purge live-boot live-boot-doc live-boot-initramfs-tools live-config live-config-doc live-config-systemd live-tools user-setup 2>/dev/null || true'", timeout=60)
+            self.log("✓ live-boot remnants purged", "SUCCESS")
+
+            # Remove Ventoy hooks (leftover from ISO boot, breaks initramfs)
+            run_cmd(f"rm -f {target}/usr/share/initramfs-tools/hooks/vtoy-hook.sh {target}/sbin/vtoytool {target}/sbin/vtoypartx {target}/sbin/vtoydump {target}/sbin/vtoydrivers 2>/dev/null || true")
+
+            # Ensure cryptsetup packages are installed
+            self.log("Installing cryptsetup-initramfs...", "PROGRESS")
             run_cmd(f"chroot {target} /bin/bash -c 'DEBIAN_FRONTEND=noninteractive apt-get update -qq && apt-get install -y -qq cryptsetup cryptsetup-initramfs 2>/dev/null'", timeout=180)
-            # Ensure cryptsetup hooks are included in initramfs
+
+            # Force CRYPTSETUP=y so cryptsetup is always included in initramfs
             run_cmd(f"chroot {target} /bin/bash -c 'echo \"CRYPTSETUP=y\" >> /etc/cryptsetup-initramfs/conf-hook 2>/dev/null || true'")
-            run_cmd(f"chroot {target} /bin/bash -c 'update-initramfs -u -k all 2>/dev/null'", timeout=120)
-            self.log("✓ initramfs updated with LUKS support", "SUCCESS")
+
+            # Ensure required kernel modules are listed for initramfs
+            run_cmd(f"chroot {target} /bin/bash -c 'for m in dm-crypt dm-mod aes aes_generic sha256 xts; do grep -qxF \"$m\" /etc/initramfs-tools/modules 2>/dev/null || echo \"$m\" >> /etc/initramfs-tools/modules; done'")
+
+            # Clean any stale initramfs cryptroot overrides
+            run_cmd(f"rm -f {target}/etc/initramfs-tools/conf.d/cryptroot 2>/dev/null || true")
+
+            # Rebuild initramfs from scratch (not just update)
+            self.log("Rebuilding initramfs with LUKS support...", "PROGRESS")
+            run_cmd(f"chroot {target} /bin/bash -c 'update-initramfs -u -k all'", timeout=180)
+            self.log("✓ initramfs rebuilt with LUKS support", "SUCCESS")
+
+            # Verify crypttab was embedded in initramfs
+            rc, verify_out, _ = run_cmd(f"chroot {target} /bin/bash -c 'lsinitramfs /boot/initrd.img-$(ls /boot/vmlinuz-* | head -1 | sed \"s|/boot/vmlinuz-||\") 2>/dev/null | grep cryptroot/crypttab'")
+            if verify_out:
+                # Check it's not empty
+                rc2, size_out, _ = run_cmd(f"chroot {target} /bin/bash -c 'lsinitramfs -l /boot/initrd.img-$(ls /boot/vmlinuz-* | head -1 | sed \"s|/boot/vmlinuz-||\") 2>/dev/null | grep cryptroot/crypttab'")
+                if size_out and "  0 " not in size_out:
+                    self.log("✓ crypttab embedded in initramfs (non-empty)", "SUCCESS")
+                else:
+                    self.log("⚠ cryptroot/crypttab in initramfs may be empty — LUKS boot might fail", "WARNING")
+            else:
+                self.log("⚠ cryptroot/crypttab not found in initramfs", "WARNING")
 
     def _install_grub(self, cfg):
         target = self.mount_target
@@ -1119,8 +1159,19 @@ class InstallWorker(QThread):
         boot_type = cfg['boot_type']
 
         if cfg.get('luks_enabled'):
-            self.log("Enabling GRUB cryptodisk support...", "PROGRESS")
-            run_cmd(f"chroot {target} /bin/bash -c \"echo 'GRUB_ENABLE_CRYPTODISK=y' >> /etc/default/grub\"")
+            self.log("Configuring GRUB for LUKS...", "PROGRESS")
+            # Debian approach: GRUB_ENABLE_CRYPTODISK lets GRUB itself decrypt
+            # GRUB_DISABLE_LINUX_UUID prevents GRUB from using the ext4 UUID
+            #   (which isn't accessible until LUKS is unlocked)
+            # root=/dev/mapper/<name> tells the kernel where root is after unlock
+            # NOTE: Do NOT use cryptdevice= — that is Arch Linux syntax, Debian ignores it
+            grub_luks_cmds = (
+                f"sed -i '/GRUB_ENABLE_CRYPTODISK/d' /etc/default/grub; "
+                f"sed -i '/GRUB_DISABLE_LINUX_UUID/d' /etc/default/grub; "
+                f"echo 'GRUB_ENABLE_CRYPTODISK=y' >> /etc/default/grub; "
+                f"echo 'GRUB_DISABLE_LINUX_UUID=true' >> /etc/default/grub"
+            )
+            run_cmd(f"chroot {target} /bin/bash -c \"{grub_luks_cmds}\"")
 
         if boot_type in ('legacy_mbr', 'bios_gpt'):
             self.log("Installing GRUB for BIOS...", "PROGRESS")
@@ -2034,7 +2085,7 @@ class ProgressScreen(QWidget):
         layout.setContentsMargins(30, 20, 30, 20)
         layout.setSpacing(10)
 
-        title = QLabel("Installing Glitch Linux")
+        title = QLabel("Installing Glitch Linux...")
         title.setObjectName("title")
         layout.addWidget(title)
 
