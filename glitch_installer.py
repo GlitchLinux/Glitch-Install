@@ -7,7 +7,7 @@ Converts the Bonsai CLI installer into a professional GUI experience.
 
 Requirements: PyQt5, psutil
 Run as root: sudo python3 glitch_installer.py
-"""
+"""			
 
 import sys
 import os
@@ -688,7 +688,7 @@ class InstallWorker(QThread):
 
         # ── Stage 9: Install bootloader ──
         stage += 1
-        self.step_signal.emit("Installing GRUB bootloader...")
+        self.step_signal.emit("Installing GRUB bootloader")
         self.stage_signal.emit(9)
         self.progress_signal.emit(88)
         self._install_grub(cfg)
@@ -699,7 +699,7 @@ class InstallWorker(QThread):
 
         # ── Stage 10: User setup ──
         stage += 1
-        self.step_signal.emit("Setting up user account...")
+        self.step_signal.emit("Setting up user account")
         self.stage_signal.emit(10)
         self.progress_signal.emit(93)
         self._setup_user(cfg)
@@ -1400,7 +1400,7 @@ class WelcomeScreen(QWidget):
         self.btn_exit.setFixedWidth(140)
         btn_layout.addWidget(self.btn_exit)
 
-        self.btn_start = QPushButton("Start Installation")
+        self.btn_start = QPushButton("Install")
         self.btn_start.setObjectName("primary")
         self.btn_start.setFixedWidth(200)
         btn_layout.addWidget(self.btn_start)
@@ -1982,7 +1982,7 @@ class ReviewScreen(QWidget):
         self.btn_cancel = QPushButton("Cancel")
         self.btn_cancel.setObjectName("danger")
         btn_layout.addWidget(self.btn_cancel)
-        self.btn_install = QPushButton("⚡ Start Install")
+        self.btn_install = QPushButton("Install")
         self.btn_install.setObjectName("success")
         self.btn_install.setFixedWidth(180)
         self.btn_install.setStyleSheet("""
@@ -2085,7 +2085,7 @@ class ProgressScreen(QWidget):
         layout.setContentsMargins(30, 20, 30, 20)
         layout.setSpacing(10)
 
-        title = QLabel("Installing Glitch Linux...")
+        title = QLabel("Installing Glitch Linux")
         title.setObjectName("title")
         layout.addWidget(title)
 
