@@ -413,7 +413,9 @@ def get_block_devices():
 def get_partitions(device):
     """Get partitions for a device."""
     partitions = []
-    rc, out, _ = run_cmd(f"lsblk -b -n -o NAME,SIZE,FSTYPE,LABEL,MOUNTPOINT -p {device}")
+    # Use --raw (-r) to suppress tree-drawing characters (└─, ├─) that
+    # corrupt device paths and cause 'Can't lookup blockdev' on mount.
+    rc, out, _ = run_cmd(f"lsblk -b -n -r -o NAME,SIZE,FSTYPE,LABEL,MOUNTPOINT -p {device}")
     if rc != 0:
         return partitions
 
@@ -421,7 +423,12 @@ def get_partitions(device):
         parts = line.split(None, 4)
         if len(parts) < 2:
             continue
-        name = parts[0]
+        # Belt-and-suspenders: strip any residual tree-drawing Unicode chars
+        name = re.sub(r'^[└├│─┌┐┘┤┬┴┼\s─]+', '', parts[0]).strip()
+        if not name.startswith('/dev/'):
+            # Fallback: extract /dev/... path from the raw string
+            m = re.search(r'(/dev/\S+)', parts[0])
+            name = m.group(1) if m else parts[0]
         if name == device:
             continue  # Skip the disk itself
         try:
@@ -594,7 +601,18 @@ class InstallWorker(QThread):
         self.progress_signal.emit(5)
 
         target_dev = cfg['target_device']
-        self.exec_cmd(f"umount {target_dev}* 2>/dev/null || true", "Unmounting target device partitions")
+        if cfg['partitioning'] == 'existing':
+            # Only unmount the specific partitions we will use — not the whole disk.
+            # Globbing the entire device (e.g. nvme0n1*) can unmount the live
+            # session's own partitions and invalidate block-device nodes.
+            for key in ('data_partition', 'efi_partition', 'boot_partition'):
+                part = cfg.get(key)
+                if part:
+                    self.exec_cmd(f"umount {part} 2>/dev/null || true",
+                                  f"Unmounting {part}")
+        else:
+            self.exec_cmd(f"umount {target_dev}* 2>/dev/null || true",
+                          "Unmounting target device partitions")
         time.sleep(1)
 
         if self._cancelled:
@@ -810,7 +828,20 @@ class InstallWorker(QThread):
 
     def _setup_existing_partitions(self, cfg):
         self.log("Using existing partition layout", "INFO")
-        # Partitions already set in config from the UI
+
+        # Make sure the target partition is not mounted before formatting
+        data_part = cfg['data_partition']
+        self.exec_cmd(f"umount {data_part} 2>/dev/null || true")
+
+        # Settle udev so block-device nodes are fully available
+        self.exec_cmd("udevadm settle --timeout=5 2>/dev/null || true")
+
+        # Format the root partition (user expects a clean install)
+        if not cfg.get('luks_enabled'):
+            self.exec_cmd(
+                f"mkfs.ext4 -F -L ROOT {data_part}",
+                "Formatting root partition (ext4)")
+            self.log(f"✓ Root partition formatted: {data_part}", "SUCCESS")
 
     def _format_partitions(self, cfg):
         if cfg.get('efi_partition') and cfg['partitioning'] == 'erase':
@@ -1480,7 +1511,7 @@ class DiskSelectScreen(QWidget):
 
         # Refresh button
         refresh_layout = QHBoxLayout()
-        self.btn_refresh = QPushButton("⟳ Refresh Devices")
+        self.btn_refresh = QPushButton("⟳ Refresh")
         self.btn_refresh.setFixedWidth(180)
         self.btn_refresh.clicked.connect(self.refresh_devices)
         refresh_layout.addWidget(self.btn_refresh)
@@ -2118,7 +2149,7 @@ class ProgressScreen(QWidget):
             "background-color: #1d1d1d; color: #ffffff; "
             "border: 1px solid #4a4a4a; border-radius: 4px; padding: 8px; "
             "font-family: 'JetBrains Mono', 'Fira Code', 'Consolas', 'Ubuntu Mono', monospace; "
-            "font-size: 14px;")
+            "font-size: 18px;")
         layout.addWidget(self.log_output)
 
         # Time
