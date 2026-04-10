@@ -1,0 +1,12 @@
+[Desktop Entry]
+Version=1.0
+Type=Application
+Comment[en_GB]=Install your system to disk!
+Name=Glitch Installer
+Exec=/usr/bin/glitchinstall
+Icon=/usr/share/glitchinstall/glitchinstall.png
+Terminal=false
+Categories=Utility;
+Comment=
+Path=
+StartupNotify=false
