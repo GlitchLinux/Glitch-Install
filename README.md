@@ -2,9 +2,6 @@
 
 <img width="904" height="656" alt="image" src="https://github.com/user-attachments/assets/767f3350-d44d-42ad-810b-d7cc3c5cc69a" />
 
-### Removed
-- ❌ `efi-runtimes` (optional, not essential)
-
 ### Added (LUKS/Encryption Support)
 - ✅ `cryptsetup` - Core LUKS encryption tool
 - ✅ `cryptsetup-initramfs` - Cryptsetup hooks for initramfs
